@@ -3,5 +3,11 @@
 {% block body %}
     <div class="container">
         <h1>Your lucky number is {{ number }}</h1>
+
+        {% for day in days %}
+            <h4>{{ day }}</h4>
+        {% endfor %}
+        <img class="img img-fluid" src="{{ asset('images/fiets.png') }}" alt="Fiets!"/>
+        <a href="{{  path('morgen')}}">ga door</a>
     </div>
 {% endblock %}
