@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Task;
 use App\Form\TaskType;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +21,9 @@ class TaskController extends AbstractController
     }
 
     #[Route('/taskform', name: 'app_task_form')]
-    public function taskForm(Request $request): Response
+    public function taskForm(Request $request, ManagerRegistry $doctrine): Response
     {
+        $entityManager = $doctrine->getManager();
         $task = new Task();
 
 
@@ -32,10 +34,15 @@ class TaskController extends AbstractController
             // $form->getData() holds the submitted values
             // but, the original `$task` variable has also been updated
             $task = $form->getData();
-            dd($task);
+
+            // tell Doctrine you want to (eventually) save the Product (no queries yet)
+            $entityManager->persist($task);
+
+            // actually executes the queries (i.e. the INSERT query)
+            $entityManager->flush();
             // ... perform some action, such as saving the task to the database
 
-            return $this->redirectToRoute('task_success');
+            return $this->redirectToRoute('app_task');
         }
 
 
